@@ -11,7 +11,7 @@ export const CashAWalletCtrl = async (req: Request, resp: Response) => {
   try {
     //put some cash into a wallet right now men!!
     let cashIn: WalletCashType = {
-      userId: req.context.user.userId,
+      userId: Number(req.body.userId),
       amount: Number(req.body.amount),
     };
     let results = await cashAWallet(cashIn);
