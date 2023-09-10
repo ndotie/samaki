@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  phone    String @unique
+  password String
+  role     String //this should be an enumaration thing!!
+  gender   String
+
+  //LETS TO SOME MORE
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  RefreshToken RefreshToken[]
+}
+
+model RefreshToken {
+  id          String   @id @default(uuid())
+  hashedToken String
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Fish {
+  id                 Int          @id @default(autoincrement())
+  fishedAt           String
+  submittingDate     DateTime
+  submittingBookDate DateTime     @default(now())
+  // fisherId Int
+  // fisher User @relation(fields: [])
+  labStatus          String       @default("Pending") //this could be enumatation of Pending | Approved | Rejected
+  rejectionReason    String?
+  amount             Decimal //this needs to be a decimal 
+  // Order              Order[]
+  OrderItems         OrderItems[]
+  fishTypeId         Int?
+  fishType           FishType?    @relation(fields: [fishTypeId], references: [id])
+}
+
+model Order {
+  id         Int      @id @default(autoincrement())
+  customerId Int //no order exists without a user
+  createdAt  DateTime @default(now()) //this order created time
+  status     String   @default("Pending") //this could be Pending | Active | Completed
+  // fish       Fish @relation(fields: [fishId], references: [id])
+
+  // customer User ..... maujinga mengi in this area
+  //order Number
+  //order Date
+  //order status
+  //order serial
+  OrderItems OrderItems[]
+}
+
+model OrderItems {
+  id      Int     @id @default(autoincrement())
+  orderId Int
+  order   Order   @relation(fields: [orderId], references: [id]) //so it check for relationship as well
+  fishId  Int
+  fish    Fish    @relation(fields: [fishId], references: [id])
+  amount  Decimal
+}
+
+model FishPhoto {
+  id         Int      @id @default(autoincrement())
+  path       String
+  fishTypeId Int
+  fish       FishType @relation(fields: [fishTypeId], references: [id])
+}
+
+model FishType {
+  id       Int         @id @default(autoincrement())
+  name     String
+  photos   FishPhoto[] //could have more than one photo per fish
+  Fish     Fish[]
+  price    Decimal     @default(0.0)
+  unitSize Decimal     @default(0.0)
+  currency String      @default("TZS") //this needs to be enum
+  status   String      @default("Pending")
+}
+
+model Wallet {
+  id       Int        @id @default(autoincrement())
+  userId   Int
+  Expenses Expenses[]
+  Payments Payments[]
+}
+
+model Payments {
+  id          Int      @id @default(autoincrement())
+  walletId    Int
+  paymentDate DateTime @default(now())
+  amount      Decimal
+  wallet      Wallet   @relation(fields: [walletId], references: [id])
+}
+
+model Expenses {
+  id       Int      @id @default(autoincrement())
+  walletId Int
+  wallet   Wallet   @relation(fields: [walletId], references: [id])
+  amount   Decimal
+  date     DateTime @default(now())
+  service  String //what he took
+  size     String //the size should be a string as well
+}
