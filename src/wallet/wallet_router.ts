@@ -7,8 +7,8 @@ import {
 
 const router = express.Router();
 
-router.get("/charge-wallet", chargeAWalletCtrl);
-router.get("/cash-wallet", CashAWalletCtrl);
-router.get("/balance", getUserBalanceCtrl);
+router.post("/charge-wallet", chargeAWalletCtrl);
+router.post("/cash-wallet", CashAWalletCtrl);
+router.get("/check-balance", getUserBalanceCtrl);
 
 export default router;

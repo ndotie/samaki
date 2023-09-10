@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
-import { addFish, getFish } from "./fish_model";
+import { FishToStore, addFish, getFish } from "./fish_model";
 
 export const createFish = async (req: Request, resp: Response) => {
   let results = await addFish({
     //.. now lets put some data for the fish right now!!
-    name: req.body.name,
-    fishedAt: req.body.kituo,
+    fishTypeId: Number(req.body.fishTypeId),
+    fishedAt: req.body.fishedAt,
     submittingDate: new Date(), //so this is a datetime right now
     amount: Number(req.body.amount),
-  });
+    fisherId: req.context.user.userId,
+  } as FishToStore);
   resp.json({
     status: true,
     results,

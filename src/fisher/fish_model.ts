@@ -1,6 +1,13 @@
 import { prisma } from "../utils/db";
 
-export const addFish = (fish: any) => {
+export type FishToStore = {
+  fishedAt: string;
+  submittingDate: Date;
+  fisherId: number;
+  amount: number;
+  fishTypeId: number;
+};
+export const addFish = (fish: FishToStore) => {
   return prisma.fish.create({
     data: {
       ...fish,

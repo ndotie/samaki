@@ -1,3 +1,4 @@
+import { Decimal } from "@prisma/client/runtime/library";
 import { prisma } from "../utils/db";
 
 //once a user is paid then it means he have a wallet by default
@@ -9,19 +10,19 @@ export type WalletCashType = {
 export const cashAWallet = async (cash: WalletCashType) => {
   //we pick a wallet id from this user,
   //we make payment to this wallet
-  let wallets = await prisma.wallet.findFirst({
+  let wallet = await prisma.wallet.findFirst({
     select: { id: true },
     where: { userId: cash.userId },
   });
-  if (!wallets) {
-    let wallet = prisma.wallet.create({
+  if (!wallet) {
+    wallet = await prisma.wallet.create({
       data: { userId: cash.userId }, //i think cash should contain all the data
     });
 
     //then we have wallet lets cash in
     let payment = await prisma.payments.create({
       data: {
-        walletId: 1, //wallet.id,
+        walletId: wallet.id,
         amount: cash.amount,
       },
     });
@@ -30,48 +31,70 @@ export const cashAWallet = async (cash: WalletCashType) => {
 
   let payment = await prisma.payments.create({
     data: {
-      walletId: 1, //wallet.id,
+      walletId: wallet.id,
       amount: cash.amount,
     },
   });
   return payment;
 };
 
-export type ChargeType = {
+export type WalletChargeType = {
   //this is a wallete charge and nothing big right!!
-  walletId: number;
+  userId: number;
   amount: number;
   date?: Date;
   service: string; //what he took
   size: string; //the size should be a string as well
 };
-export const chargeAWallet = async (charge: ChargeType) => {
+export const chargeAWallet = async (charge: WalletChargeType) => {
+  let wallet = await prisma.wallet.findFirst({
+    where: { userId: charge.userId },
+  });
+  if (!wallet) {
+    return false; //no wallete... we should check even a balance
+  }
+  let { userId, ...rest } = charge;
   return prisma.expenses.create({
-    data: charge,
+    data: { ...rest, walletId: wallet.id },
   });
 };
 
-export const getUserBalance = async (userId: number, walletId: number) => {
-  //   let totalWallet = await prisma.wallet.aggregate({
-  //     _sum: {
-  //       amount: true,
-  //     },
-  //     where: {
-  //       userId: {
-  //         equals: userId,
-  //       },
-  //     },
-  //   });
-  //   let totalExp = await prisma.expenses.aggregate({
-  //     _sum: {
-  //       amount: true,
-  //     },
-  //     where: {
-  //       walletId: {
-  //         equals: userId,
-  //       },
-  //     },
-  //   });
-  //   return { wallet: totalWallet._sum.amount, exp: totalExp._sum.amount };
-  return { wallet: 4, exp: 3 };
+export const getUserBalance = async (userId: number) => {
+  let wallet = await prisma.wallet.findFirst({
+    select: { id: true },
+    where: { userId: userId },
+  });
+
+  if (!wallet) {
+    //if there is no wallet thes means he have zero balance
+    return { balance: 0 };
+  }
+
+  let cashIn = await prisma.payments.aggregate({
+    _sum: {
+      amount: true,
+    },
+    where: {
+      walletId: wallet.id,
+    },
+  });
+
+  let cashOut = await prisma.expenses.aggregate({
+    _sum: {
+      amount: true,
+    },
+    where: {
+      walletId: wallet.id,
+    },
+  });
+
+  let pesaOut: any = 0.0;
+  if (cashOut && cashOut._sum.amount) pesaOut = cashOut._sum.amount;
+
+  let pesaIn: any = 0.0;
+  if (cashIn && cashIn._sum.amount) pesaIn = cashIn._sum.amount;
+
+  return {
+    balance: pesaIn - pesaOut,
+  };
 };

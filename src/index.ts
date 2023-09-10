@@ -26,11 +26,11 @@ app.use(
 
 app.use("/auth", auth);
 app.use("/fish", isAuthenticated, fish);
-app.use("/fishtype", fishtype);
-app.use("/orders", orders);
-app.use("/wallet", wallet_router);
-app.get("/", (req: Request, res: Response) => {
-  res.send("Not a route"); //this needs not to fail @any sacumstances
+app.use("/fishtype", isAuthenticated, fishtype);
+app.use("/orders", isAuthenticated, orders);
+app.use("/wallet", isAuthenticated, wallet_router);
+app.get("/", isAuthenticated, (req: Request, res: Response) => {
+  res.send("Not a route " + req.context.user.userId); //this needs not to fail @any sacumstances
 });
 
 app.listen(port, () => {
