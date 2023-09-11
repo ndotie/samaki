@@ -39,6 +39,12 @@ export const chargeAWalletCtrl = async (req: Request, resp: Response) => {
     };
     let charge = await chargeAWallet(cashOut);
 
+    if (!charge) {
+      return resp.json({
+        status: false,
+        msg: "Insufficient fund",
+      });
+    }
     return resp.json({
       status: true,
       charge,

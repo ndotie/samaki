@@ -53,6 +53,10 @@ export const chargeAWallet = async (charge: WalletChargeType) => {
   if (!wallet) {
     return false; //no wallete... we should check even a balance
   }
+  let { balance } = await getUserBalance(charge.userId);
+  if (balance < charge.amount) {
+    return false;
+  }
   let { userId, ...rest } = charge;
   return prisma.expenses.create({
     data: { ...rest, walletId: wallet.id },
