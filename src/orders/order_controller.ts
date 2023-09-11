@@ -5,6 +5,7 @@ import {
   getUsersCart,
   receiveOrder,
   completeOrder,
+  removeFromCart,
 } from "./order_model";
 export const createOrderCtrl = async (req: Request, resp: Response) => {
   try {
@@ -56,5 +57,19 @@ export const completeOrderCtrl = async (req: Request, resp: Response) => {
     });
   } catch (ex) {
     console.log(ex);
+  }
+};
+
+export const removeItemFromCartCtrl = async (req: Request, resp: Response) => {
+  try {
+    await removeFromCart(Number(req.params.id));
+    return resp.json({
+      status: true,
+    });
+  } catch (ex) {
+    return resp.json({
+      status: false,
+      msg: "Some errors occured!",
+    });
   }
 };

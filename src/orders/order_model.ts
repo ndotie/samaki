@@ -46,6 +46,11 @@ export const createOrder = async (cartdata: CartItemType) => {
   return AddItemToCart;
 };
 
+export const removeFromCart = async (id: number) => {
+  return prisma.orderItems.delete({
+    where: { id },
+  });
+};
 export const getUsersCart = async (customerId: number) => {
   return prisma.order.findFirst({
     where: { customerId, status: "Cart" }, //still a cart
