@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { getAllUsers, getUserDetails } from "./users_model";
-import { getUserBalance } from "wallet/wallet_model";
+import { getUserBalance } from "../wallet/wallet_model";
 export const getUsersCtrl = async (req: Request, resp: Response) => {
   try {
     let results = await getAllUsers();
