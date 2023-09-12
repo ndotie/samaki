@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
-import path from "path";
 import cors from "cors";
 import auth from "./auth/auth_router"; //picking the index.ts
 import fish from "./fisher/router";
