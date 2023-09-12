@@ -6,6 +6,7 @@ import auth from "./auth/auth_router"; //picking the index.ts
 import fish from "./fisher/router";
 import fishtype from "./fish/router";
 import orders from "./orders/router";
+import users_router from "./users/users_router";
 import wallet_router from "./wallet/wallet_router";
 import { isAuthenticated } from "./middleware/authenticated";
 
@@ -29,6 +30,7 @@ app.use("/fish", isAuthenticated, fish);
 app.use("/fishtype", isAuthenticated, fishtype);
 app.use("/orders", isAuthenticated, orders);
 app.use("/wallet", isAuthenticated, wallet_router);
+app.use("/users", users_router);
 app.get("/", isAuthenticated, (req: Request, res: Response) => {
   res.send("Not a route " + req.context.user.userId); //this needs not to fail @any sacumstances
 });
