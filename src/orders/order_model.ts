@@ -5,6 +5,7 @@
  * 4. show
  */
 
+import { hidePassword } from "users/users_model";
 import { prisma } from "../utils/db";
 
 export type CartItemType = {
@@ -81,6 +82,6 @@ export const allOrders = async () => {
         not: "Cart",
       },
     },
-    include: { User: true },
+    include: { User: { select: hidePassword } },
   });
 };

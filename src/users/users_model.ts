@@ -1,6 +1,6 @@
 import { prisma } from "../utils/db";
 
-const hidePassword = {
+export const hidePassword = {
   name: true,
   createdAt: true,
   updatedAt: true,
