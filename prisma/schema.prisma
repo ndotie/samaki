@@ -64,8 +64,7 @@ model Order {
   //order status
   //order serial
   OrderItems OrderItems[]
-  User       User?        @relation(fields: [userId], references: [id])
-  userId     Int?
+  User       User         @relation(fields: [customerId], references: [id])
 }
 
 model OrderItems {

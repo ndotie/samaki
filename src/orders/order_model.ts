@@ -81,6 +81,5 @@ export const allOrders = async () => {
         not: "Cart",
       },
     },
-    // include: { customer: true },
   });
 };
