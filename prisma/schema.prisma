@@ -58,13 +58,14 @@ model Order {
   createdAt  DateTime     @default(now()) //this order created time
   status     String       @default("Cart") //this could be Cart | Pending | Active | Completed
   // fish       Fish @relation(fields: [fishId], references: [id])
-  customer   User         @relation(fields: [customerId], references: [id])
   // customer User ..... maujinga mengi in this area
   //order Number
   //order Date
   //order status
   //order serial
   OrderItems OrderItems[]
+  User       User?        @relation(fields: [userId], references: [id])
+  userId     Int?
 }
 
 model OrderItems {
