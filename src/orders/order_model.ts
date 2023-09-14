@@ -82,6 +82,9 @@ export const allOrders = async () => {
         not: "Cart",
       },
     },
-    include: { User: { select: hidePassword } },
+    include: {
+      User: { select: hidePassword },
+      OrderItems: { include: { fish: true } },
+    },
   });
 };
