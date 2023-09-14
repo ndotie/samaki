@@ -6,6 +6,7 @@ import {
   receiveOrder,
   completeOrder,
   removeFromCart,
+  allOrders,
 } from "./order_model";
 export const createOrderCtrl = async (req: Request, resp: Response) => {
   try {
@@ -70,6 +71,21 @@ export const removeItemFromCartCtrl = async (req: Request, resp: Response) => {
     return resp.json({
       status: false,
       msg: "Some errors occured!",
+    });
+  }
+};
+
+export const getOrdersCtrl = async (req: Request, resp: Response) => {
+  try {
+    let results = await allOrders(); //just for the fun!! my head spinned when things didnt go my way but now am high agian
+    return resp.json({
+      status: true,
+      orders: results,
+    });
+  } catch (ex) {
+    return resp.json({
+      status: false,
+      msg: "An error has occured",
     });
   }
 };

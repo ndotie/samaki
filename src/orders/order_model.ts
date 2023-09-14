@@ -73,3 +73,14 @@ export const completeOrder = async (cartId: number) => {
     data: { status: "Completed" },
   });
 };
+
+export const allOrders = async () => {
+  return prisma.order.findMany({
+    where: {
+      status: {
+        not: "Cart",
+      },
+    },
+    include: { customer: true },
+  });
+};

@@ -24,6 +24,7 @@ model User {
   updatedAt    DateTime       @updatedAt
   RefreshToken RefreshToken[]
   Fish         Fish[]
+  Order        Order[]
 }
 
 model RefreshToken {
@@ -52,12 +53,12 @@ model Fish {
 }
 
 model Order {
-  id         Int      @id @default(autoincrement())
+  id         Int          @id @default(autoincrement())
   customerId Int //no order exists without a user
-  createdAt  DateTime @default(now()) //this order created time
-  status     String   @default("Cart") //this could be Cart | Pending | Active | Completed
+  createdAt  DateTime     @default(now()) //this order created time
+  status     String       @default("Cart") //this could be Cart | Pending | Active | Completed
   // fish       Fish @relation(fields: [fishId], references: [id])
-
+  customer   User         @relation(fields: [customerId], references: [id])
   // customer User ..... maujinga mengi in this area
   //order Number
   //order Date
