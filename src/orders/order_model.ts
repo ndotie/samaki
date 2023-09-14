@@ -5,7 +5,7 @@
  * 4. show
  */
 
-import { hidePassword } from "users/users_model";
+import { hidePassword } from "../users/users_model";
 import { prisma } from "../utils/db";
 
 export type CartItemType = {
