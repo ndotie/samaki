@@ -8,6 +8,7 @@ export const hidePassword = {
   email: true,
   phone: true,
   gender: true,
+  id: true,
 };
 //retrieving all the users and we should not retrive db
 export const getAllUsers = () => {
